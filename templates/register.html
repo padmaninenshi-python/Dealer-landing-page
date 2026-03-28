@@ -16,7 +16,7 @@
             <div class="flash flash-{{ category }}">{{ message }}</div>
             {% endfor %}
             {% endwith %}
-            <form method="POST">
+            <form method="POST" id="registerForm" onsubmit="return validateForm()">
                 <div class="form-group">
                     <label>Full Name</label>
                     <input type="text" name="full_name" placeholder="Enter your full name" required>
@@ -24,11 +24,17 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Mobile Number</label>
-                        <input type="tel" name="mobile" placeholder="10-digit mobile" required>
+                        <input type="tel" name="mobile" id="mobile" placeholder="10-digit mobile"
+                               maxlength="10" pattern="[0-9]{10}"
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                               onblur="validateMobile()" required>
+                        <span id="mobileError" style="color:#e53e3e;font-size:12px;display:none;">Please enter a valid 10-digit mobile number.</span>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" name="email" placeholder="you@example.com" required>
+                        <input type="email" name="email" id="email" placeholder="you@example.com"
+                               onblur="validateEmail()" required>
+                        <span id="emailError" style="color:#e53e3e;font-size:12px;display:none;">Please enter a valid email address.</span>
                     </div>
                 </div>
                 <div class="form-row">
@@ -51,5 +57,38 @@
         </div>
     </div>
     <script src="/static/script.js"></script>
+    <script>
+        function validateMobile() {
+            const mobile = document.getElementById('mobile');
+            const error = document.getElementById('mobileError');
+            if (!/^[0-9]{10}$/.test(mobile.value)) {
+                mobile.style.borderColor = '#e53e3e';
+                error.style.display = 'block';
+                return false;
+            }
+            mobile.style.borderColor = '#38a169';
+            error.style.display = 'none';
+            return true;
+        }
+
+        function validateEmail() {
+            const email = document.getElementById('email');
+            const error = document.getElementById('emailError');
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                email.style.borderColor = '#e53e3e';
+                error.style.display = 'block';
+                return false;
+            }
+            email.style.borderColor = '#38a169';
+            error.style.display = 'none';
+            return true;
+        }
+
+        function validateForm() {
+            const mobileOk = validateMobile();
+            const emailOk = validateEmail();
+            return mobileOk && emailOk;
+        }
+    </script>
 </body>
 </html>
