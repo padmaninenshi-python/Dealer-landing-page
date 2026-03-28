@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#f5f6fa;color:#1a1a2e}
+a{text-decoration:none;color:inherit}
+
+/* ── Auth Forms ── */
+.auth-container{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0A0A0F,#1C1C2E);padding:20px}
+.auth-card{background:#fff;border-radius:18px;padding:48px 40px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.auth-card h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:6px;text-align:center;letter-spacing:-0.5px}
+.auth-card .subtitle{text-align:center;color:#888;margin-bottom:28px;font-size:14px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-weight:600;margin-bottom:6px;font-size:13px;color:#444;letter-spacing:0.2px}
+.form-group input,.form-group select{width:100%;padding:12px 14px;border:1.5px solid #e8e8e8;border-radius:10px;font-size:14px;transition:.2s;font-family:'DM Sans',sans-serif;background:#fafafa;color:#1a1a2e}
+.form-group input:focus,.form-group select:focus{border-color:#c27d10;outline:none;box-shadow:0 0 0 3px rgba(194,125,16,.1);background:#fff}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.auth-card .btn{width:100%;padding:14px;font-size:15px;margin-top:8px}
+.auth-footer{text-align:center;margin-top:18px;font-size:14px;color:#888}
+.auth-footer a{color:#c27d10;font-weight:600}
+.btn{display:inline-block;padding:10px 28px;border-radius:10px;font-weight:600;cursor:pointer;border:none;transition:.2s;font-size:14px;font-family:'DM Sans',sans-serif}
+.btn-primary{background:#1a1a2e;color:#fff}
+.btn-primary:hover{background:#c27d10}
+
+/* ── Flash ── */
+.flash{padding:12px 20px;border-radius:10px;margin:12px 0;font-size:14px;font-weight:500}
+.flash-success{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+.flash-error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+
+/* ── Onboarding ── */
+.onboard-container{min-height:100vh;background:#f5f6fa;padding:30px}
+.onboard-wrapper{max-width:640px;margin:0 auto}
+.progress-bar{display:flex;margin-bottom:36px;position:relative}
+.progress-bar::before{content:'';position:absolute;top:20px;left:40px;right:40px;height:3px;background:#e2e8f0;z-index:0}
+.progress-step{flex:1;text-align:center;position:relative;z-index:1}
+.progress-step .circle{width:42px;height:42px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-weight:700;font-size:14px;color:#999;transition:.3s}
+.progress-step.active .circle,.progress-step.done .circle{background:#c27d10;color:#fff}
+.progress-step .label{font-size:11px;color:#888;font-weight:600}
+.progress-step.active .label{color:#c27d10}
+.progress-step.done .label{color:#16a34a}
+.onboard-card{background:#fff;border-radius:18px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,0.08)}
+.onboard-card h3{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px}
+.onboard-card .desc{color:#888;font-size:14px;margin-bottom:28px}
+.completion-box{text-align:center;padding:40px}
+.completion-box .check-icon{font-size:64px;margin-bottom:16px}
+.completion-box h3{font-size:24px;margin-bottom:8px;color:#16a34a;font-family:'Syne',sans-serif}
+.completion-box p{color:#666;margin-bottom:24px}
+.navbar{background:#0A0A0F;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 8px rgba(0,0,0,.2)}
+.navbar .logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#D4A853}
+.navbar .logo span{color:#fff}
+.navbar nav a{color:rgba(255,255,255,.6);font-weight:500;font-size:14px}
+.btn-outline{border:1.5px solid rgba(255,255,255,.3);color:#fff;background:transparent;padding:8px 20px;border-radius:8px}
+.btn-sm{padding:8px 18px;font-size:13px}
+
+@media(max-width:640px){
+    .form-row{grid-template-columns:1fr}
+    .auth-card{padding:32px 20px}
+}
