@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ car.name }} — DealerHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4A853; --gold-light: #F0C96B; --gold-dim: rgba(212,168,83,0.15);
+  --dark: #0A0A0F; --dark-2: #12121A; --dark-3: #1C1C2E;
+  --bg: #F4F5F9; --white: #fff;
+  --green: #22c55e; --red: #ef4444;
+  --text: #1a1a2e; --muted: #888;
+  --border: #eeeeee;
+  --sidebar-bg: #0E0E18;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── NAV ── */
+.topnav{
+  position:sticky;top:0;z-index:100;
+  background:var(--sidebar-bg);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  padding:0 32px;height:60px;
+  display:flex;align-items:center;gap:18px;
+}
+.nav-back{
+  display:flex;align-items:center;gap:8px;
+  color:rgba(255,255,255,0.5);font-size:13px;font-weight:600;
+  text-decoration:none;padding:6px 12px;border-radius:8px;
+  border:1px solid rgba(255,255,255,0.1);transition:all .2s;
+}
+.nav-back:hover{color:#fff;border-color:rgba(255,255,255,0.25);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;}
+.nav-logo span{color:var(--gold);}
+.nav-crumbs{font-size:13px;color:rgba(255,255,255,0.3);margin-left:4px;}
+.nav-crumbs b{color:rgba(255,255,255,0.7);}
+
+/* live badge in nav */
+.live-chip{
+  margin-left:auto;display:flex;align-items:center;gap:7px;
+  background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);
+  color:var(--green);font-size:11px;font-weight:700;letter-spacing:1.2px;
+  padding:5px 14px;border-radius:100px;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.4);}}
+
+/* ── LAYOUT ── */
+.page-wrap{max-width:1380px;margin:0 auto;padding:30px 32px 80px;display:grid;grid-template-columns:1fr 400px;gap:32px;align-items:start;}
+@media(max-width:1100px){.page-wrap{grid-template-columns:1fr;padding:20px 18px 60px;}}
+
+/* ── LEFT COLUMN ── */
+/* GALLERY */
+.gallery-wrap{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,0.07);margin-bottom:24px;}
+.gallery-main{position:relative;aspect-ratio:16/8;overflow:hidden;}
+.gallery-main img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease;}
+.gallery-main:hover img{transform:scale(1.03);}
+.gallery-badge{
+  position:absolute;top:18px;left:18px;
+  display:flex;align-items:center;gap:7px;
+  background:rgba(10,10,15,0.75);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.12);
+  color:#fff;font-size:11px;font-weight:700;letter-spacing:1.2px;
+  padding:6px 14px;border-radius:100px;
+}
+.gallery-fuel{
+  position:absolute;top:18px;right:18px;
+  background:var(--gold);color:var(--dark);
+  font-size:11px;font-weight:800;padding:5px 14px;border-radius:100px;
+}
+.gallery-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;background:#f0f0f0;}
+.gallery-thumbs img{
+  width:100%;aspect-ratio:4/3;object-fit:cover;
+  display:block;cursor:pointer;transition:all .25s;filter:brightness(.85);
+}
+.gallery-thumbs img:hover,.gallery-thumbs img.active{filter:brightness(1);}
+.gallery-thumbs img.active{outline:2px solid var(--gold);outline-offset:-2px;}
+
+/* CAR HEADER */
+.car-header{background:#fff;border-radius:18px;padding:28px 30px;box-shadow:0 2px 20px rgba(0,0,0,0.07);margin-bottom:24px;}
+.car-brand-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#c27d10;margin-bottom:6px;}
+.car-headline{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:8px;}
+.car-location{font-size:14px;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:5px;}
+.spec-strip{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+.spec-chip{
+  display:flex;align-items:center;gap:6px;
+  background:#f5f5fb;border:1px solid #ebebf5;
+  padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;
+}
+.spec-chip span:first-child{font-size:16px;}
+.car-desc{font-size:14px;color:#555;line-height:1.8;padding-top:16px;border-top:1px solid var(--border);}
+
+/* CONDITION */
+.section-card{background:#fff;border-radius:18px;padding:26px 30px;box-shadow:0 2px 20px rgba(0,0,0,0.07);margin-bottom:24px;}
+.section-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.section-title .icon{font-size:20px;}
+
+.cond-wrap{display:flex;align-items:center;gap:20px;margin-bottom:20px;}
+.cond-circle{
+  width:76px;height:76px;flex-shrink:0;
+  border-radius:50%;
+  background:conic-gradient(var(--gold) calc(var(--pct) * 1%), #f0f0f0 0);
+  display:flex;align-items:center;justify-content:center;position:relative;
+}
+.cond-circle::after{
+  content:'';position:absolute;inset:8px;border-radius:50%;background:#fff;
+}
+.cond-score{position:relative;z-index:1;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);}
+.cond-info h4{font-size:16px;font-weight:700;margin-bottom:4px;}
+.cond-info p{font-size:13px;color:var(--muted);}
+.cond-bars{display:flex;flex-direction:column;gap:10px;}
+.cond-bar-row{display:flex;align-items:center;gap:12px;font-size:13px;}
+.cond-bar-label{width:100px;flex-shrink:0;color:var(--muted);}
+.cond-bar-track{flex:1;height:6px;background:#f0f0f0;border-radius:10px;overflow:hidden;}
+.cond-bar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#c27d10,var(--gold));transition:width .8s ease;}
+.cond-bar-val{width:28px;text-align:right;font-weight:600;font-size:13px;color:var(--text);}
+
+/* INSPECTION */
+.insp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+@media(max-width:600px){.insp-grid{grid-template-columns:1fr;}}
+.insp-category{background:#f9f9fc;border-radius:12px;padding:16px 18px;border:1px solid #eeeeee;}
+.insp-cat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.insp-cat-name{font-size:13px;font-weight:700;letter-spacing:.5px;}
+.insp-cat-score{
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:800;
+  padding:2px 10px;border-radius:100px;
+  background:rgba(22,163,74,0.1);color:#15803d;
+}
+.insp-cat-score.warn{background:rgba(234,179,8,0.1);color:#a16207;}
+.insp-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eeeeee;font-size:13px;}
+.insp-item:last-child{border-bottom:none;}
+.insp-check{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.insp-check.ok{background:#dcfce7;color:#15803d;}
+.insp-check.warn{background:#fef9c3;color:#854d0e;}
+.insp-check.bad{background:#fef2f2;color:#dc2626;}
+.insp-total{
+  margin-top:18px;display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,#0E0E18,#1C1C2E);
+  border-radius:12px;padding:16px 20px;
+}
+.insp-total-label{font-size:13px;font-weight:600;color:rgba(255,255,255,0.5);}
+.insp-total-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--gold);}
+
+/* ── RIGHT COLUMN ── */
+.sticky-right{position:sticky;top:76px;display:flex;flex-direction:column;gap:20px;}
+
+/* BID/PRICE CARD */
+.bid-card{
+  background:linear-gradient(160deg,var(--dark) 0%,var(--dark-3) 100%);
+  border-radius:18px;padding:28px 26px;
+  border:1px solid rgba(212,168,83,0.2);
+  box-shadow:0 8px 40px rgba(0,0,0,0.18);
+}
+.bid-card-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.bid-price{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:#fff;margin-bottom:4px;line-height:1;}
+.bid-price-sub{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:20px;}
+.bid-meta-row{display:flex;gap:20px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.bid-meta{flex:1;}
+.bid-meta-label{font-size:11px;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;margin-bottom:3px;}
+.bid-meta-val{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;}
+.bid-meta-val.green{color:var(--green);}
+
+/* Countdown */
+.countdown-wrap{display:flex;gap:8px;margin-bottom:20px;}
+.cd-block{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 6px;text-align:center;}
+.cd-num{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;line-height:1;}
+.cd-label{font-size:10px;color:rgba(255,255,255,0.3);font-weight:600;letter-spacing:.5px;margin-top:3px;}
+
+/* Bid form */
+.bid-form-label{font-size:12px;color:rgba(255,255,255,0.4);font-weight:600;margin-bottom:8px;}
+.bid-input-wrap{display:flex;gap:10px;margin-bottom:12px;}
+.bid-input{
+  flex:1;padding:13px 16px;
+  background:rgba(255,255,255,0.07);
+  border:1.5px solid rgba(255,255,255,0.15);
+  border-radius:11px;color:#fff;font-size:15px;
+  font-family:'DM Sans',sans-serif;outline:none;transition:border .2s;
+}
+.bid-input:focus{border-color:var(--gold);}
+.bid-input::placeholder{color:rgba(255,255,255,0.25);}
+.btn-bid{
+  padding:13px 22px;border-radius:11px;
+  background:var(--gold);color:var(--dark);
+  font-size:14px;font-weight:800;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap;
+}
+.btn-bid:hover{background:var(--gold-light);transform:translateY(-1px);}
+.bid-hint{font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:18px;}
+.bid-status-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700;}
+.bid-status-reg{background:rgba(100,116,139,0.2);color:#94a3b8;}
+.bid-status-waiting{background:rgba(59,130,246,0.15);color:#93c5fd;}
+.bid-status-pending{background:rgba(217,119,6,0.15);color:#fbbf24;}
+.bid-status-onbid{background:rgba(234,88,12,0.15);color:#fb923c;}
+.bid-status-win{background:rgba(21,128,61,0.2);color:#4ade80;}
+.bid-status-hint{font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:10px;line-height:1.6;}
+.cd-block{background:rgba(255,255,255,0.06);border-radius:10px;padding:10px 14px;text-align:center;min-width:56px;}
+.cd-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--cd-color,var(--gold));line-height:1;}
+.cd-label{font-size:9px;color:rgba(255,255,255,0.3);font-weight:700;letter-spacing:1.5px;margin-top:2px;}
+.btn-watchlist{
+  width:100%;padding:12px;border-radius:11px;
+  border:1.5px solid rgba(255,255,255,0.15);
+  background:transparent;color:rgba(255,255,255,0.5);
+  font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-watchlist:hover{border-color:var(--gold);color:var(--gold);}
+
+/* Buy now (for non-auction cars) */
+.btn-buy-now{
+  width:100%;padding:15px;border-radius:11px;
+  background:var(--gold);color:var(--dark);
+  font-size:15px;font-weight:800;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;margin-bottom:10px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-buy-now:hover{background:var(--gold-light);}
+.btn-enquire{
+  width:100%;padding:13px;border-radius:11px;
+  border:1.5px solid rgba(255,255,255,0.15);
+  background:transparent;color:#fff;
+  font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-enquire:hover{border-color:rgba(255,255,255,0.4);}
+
+/* Verification lock */
+.verify-lock{
+  background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);
+  border-radius:12px;padding:14px 16px;text-align:center;
+  font-size:13px;color:#f87171;margin-bottom:14px;
+}
+.verify-lock a{color:#f87171;font-weight:700;}
+
+/* INSPECTION REPORT CARD */
+.insp-report-card{
+  background:#fff;border-radius:18px;padding:22px 24px;
+  box-shadow:0 2px 20px rgba(0,0,0,0.07);
+}
+.insp-dl{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  background:#f0f6ff;border:1px solid #dbeafe;border-radius:12px;
+  text-decoration:none;transition:all .2s;
+}
+.insp-dl:hover{background:#dbeafe;}
+.insp-dl-icon{font-size:26px;}
+.insp-dl-info h4{font-size:14px;font-weight:700;color:#1d4ed8;margin-bottom:2px;}
+.insp-dl-info p{font-size:12px;color:#64748b;}
+.insp-dl-arrow{margin-left:auto;font-size:18px;color:#1d4ed8;}
+
+/* EMI CALCULATOR */
+.emi-card{background:#fff;border-radius:18px;padding:26px 26px;box-shadow:0 2px 20px rgba(0,0,0,0.07);}
+.emi-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:4px;}
+.emi-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.emi-field{margin-bottom:16px;}
+.emi-field label{display:block;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;}
+.emi-input{
+  width:100%;padding:11px 14px;
+  background:#f5f5fb;border:1.5px solid #e8e8f0;
+  border-radius:10px;color:var(--text);font-size:14px;
+  font-family:'DM Sans',sans-serif;outline:none;transition:border .2s;
+}
+.emi-input:focus{border-color:#c27d10;}
+.emi-slider{width:100%;accent-color:#c27d10;cursor:pointer;}
+.slider-ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px;}
+.emi-results{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;margin-top:20px;
+}
+.emi-res{background:#f9f9fc;border-radius:12px;padding:14px;text-align:center;border:1px solid #eeeeee;}
+.emi-res-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
+.emi-res-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text);}
+.emi-res-val.accent{color:#c27d10;}
+
+/* ── ANIMATIONS ── */
+@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.col-left>*{animation:slideUp .5s ease both;}
+.col-left>*:nth-child(1){animation-delay:.05s;}
+.col-left>*:nth-child(2){animation-delay:.12s;}
+.col-left>*:nth-child(3){animation-delay:.19s;}
+.col-left>*:nth-child(4){animation-delay:.26s;}
+.col-left>*:nth-child(5){animation-delay:.33s;}
+.sticky-right>*{animation:slideUp .5s ease both;}
+.sticky-right>*:nth-child(1){animation-delay:.08s;}
+.sticky-right>*:nth-child(2){animation-delay:.16s;}
+.sticky-right>*:nth-child(3){animation-delay:.24s;}
+.sticky-right>*:nth-child(4){animation-delay:.32s;}
+
+/* ── FLASH ── */
+.flash{padding:12px 20px;border-radius:10px;margin:0 32px 20px;font-size:14px;font-weight:500;}
+.flash-success{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;}
+.flash-error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;}
+
+@media(max-width:640px){
+  .car-headline{font-size:26px;}
+  .bid-price{font-size:32px;}
+  .emi-results{grid-template-columns:1fr;}
+  .topnav{padding:0 16px;}
+  .countdown-wrap{gap:6px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <a href="{{ url_for('dashboard') }}" class="nav-back">← Back</a>
+  <div class="nav-logo">Dealer<span>Hub</span></div>
+  <div class="nav-crumbs">/ <b>{{ car.name }}</b></div>
+  {% if is_auction %}
+  <div class="live-chip"><div class="live-dot"></div> LIVE AUCTION</div>
+  {% endif %}
+</nav>
+
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for cat, msg in messages %}
+      <div class="flash flash-{{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="page-wrap">
+  <!-- ══ LEFT COLUMN ══ -->
+  <div class="col-left">
+
+    <!-- GALLERY -->
+    <div class="gallery-wrap">
+      <div class="gallery-main" id="mainImg">
+        <img id="heroImg" src="{{ car.image_url }}" alt="{{ car.name }}">
+        <div class="gallery-badge">
+          {% if is_auction %}<div class="live-dot"></div> LIVE AUCTION{% else %}📋 CERTIFIED{% endif %}
+        </div>
+        <div class="gallery-fuel">{{ car.fuel_type }}</div>
+      </div>
+      <div class="gallery-thumbs">
+        {% set imgs = [car.image_url,
+          car.image_url ~ '&sat=-50',
+          car.image_url ~ '&bri=10',
+          car.image_url ~ '&con=10'] %}
+        {% for src in [car.image_url, car.image_url, car.image_url, car.image_url] %}
+        <img src="{{ src }}" alt="View {{ loop.index }}"
+             class="{{ 'active' if loop.first }}"
+             onclick="swapImg(this)"
+             onerror="this.style.display='none'">
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- CAR HEADER -->
+    <div class="car-header">
+      <div class="car-brand-tag">{{ car.brand }} · {{ car.year }}</div>
+      <h1 class="car-headline">{{ car.name }}</h1>
+      <div class="car-location">📍 {{ car.location }}</div>
+      <div class="spec-strip">
+        <div class="spec-chip"><span>📅</span><span>{{ car.year }}</span></div>
+        <div class="spec-chip"><span>⛽</span><span>{{ car.fuel_type }}</span></div>
+        <div class="spec-chip"><span>🛣️</span><span>{{ "{:,}".format(car.km_driven) }} km</span></div>
+        <div class="spec-chip"><span>📍</span><span>{{ car.location }}</span></div>
+        <div class="spec-chip"><span>⭐</span><span>{{ car.condition_score }}/10 Condition</span></div>
+        <div class="spec-chip"><span>🏅</span><span>140-pt Certified</span></div>
+      </div>
+      <p class="car-desc">{{ car.description or 'This vehicle has been thoroughly inspected by our certified mechanics. All documents are verified and in order. Single owner with full service history available on request.' }}</p>
+    </div>
+
+    <!-- CONDITION SCORE -->
+    <div class="section-card">
+      <div class="section-title"><span class="icon">🏆</span> Condition Assessment</div>
+      <div class="cond-wrap">
+        <div class="cond-circle" style="--pct:{{ car.condition_score * 10 }}">
+          <div class="cond-score">{{ car.condition_score }}</div>
+        </div>
+        <div class="cond-info">
+          <h4>{% if car.condition_score >= 9 %}Excellent{% elif car.condition_score >= 7 %}Very Good{% elif car.condition_score >= 5 %}Good{% else %}Fair{% endif %} Condition</h4>
+          <p>Score {{ car.condition_score }}/10 based on 140-point inspection by certified mechanic</p>
+        </div>
+      </div>
+      <div class="cond-bars">
+        {% set bars = [('Engine', 9), ('Transmission', 9), ('Exterior', car.condition_score), ('Interior', car.condition_score), ('Electricals', 8), ('Tyres', 8)] %}
+        {% for label, score in bars %}
+        <div class="cond-bar-row">
+          <div class="cond-bar-label">{{ label }}</div>
+          <div class="cond-bar-track"><div class="cond-bar-fill" style="width:{{ score * 10 }}%"></div></div>
+          <div class="cond-bar-val">{{ score }}/10</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- INSPECTION REPORT -->
+    <div class="section-card">
+      <div class="section-title"><span class="icon">🔍</span> 140-Point Inspection Report</div>
+      <div class="insp-grid">
+
+        <!-- Engine & Drivetrain -->
+        <div class="insp-category">
+          <div class="insp-cat-header">
+            <div class="insp-cat-name">🔧 Engine & Drivetrain</div>
+            <div class="insp-cat-score">35/35</div>
+          </div>
+          {% for item in ['Engine Start & Idle','Oil Leaks Check','Coolant Level','Timing Belt/Chain','Exhaust Smoke','Transmission Shift','Clutch Operation','Turbo (if applicable)'] %}
+          <div class="insp-item"><span>{{ item }}</span><div class="insp-check ok">✓</div></div>
+          {% endfor %}
+        </div>
+
+        <!-- Exterior & Body -->
+        <div class="insp-category">
+          <div class="insp-cat-header">
+            <div class="insp-cat-name">🚗 Exterior & Body</div>
+            <div class="insp-cat-score {% if car.condition_score < 8 %}warn{% endif %}">
+              {{ (car.condition_score * 3)|round|int }}/30
+            </div>
+          </div>
+          {% set ext_items = [('Paint Condition', car.condition_score >= 8),('Dent / Scratches', car.condition_score >= 9),('Panel Alignment', True),('Windscreen Integrity', True),('All Windows', True),('Headlights/Taillights', True),('Boot/Hood Latch', True),('Bumpers', car.condition_score >= 8)] %}
+          {% for item, ok in ext_items %}
+          <div class="insp-item"><span>{{ item }}</span><div class="insp-check {{ 'ok' if ok else 'warn' }}">{{ '✓' if ok else '~' }}</div></div>
+          {% endfor %}
+        </div>
+
+        <!-- Interior & Comfort -->
+        <div class="insp-category">
+          <div class="insp-cat-header">
+            <div class="insp-cat-name">💺 Interior & Comfort</div>
+            <div class="insp-cat-score">28/30</div>
+          </div>
+          {% for item in ['Seat Condition','Dashboard Lights','AC Performance','Heater Function','Power Windows','Central Locking','Sunroof/Moonroof','Infotainment System'] %}
+          <div class="insp-item"><span>{{ item }}</span><div class="insp-check ok">✓</div></div>
+          {% endfor %}
+        </div>
+
+        <!-- Safety & Electronics -->
+        <div class="insp-category">
+          <div class="insp-cat-header">
+            <div class="insp-cat-name">⚡ Safety & Electrics</div>
+            <div class="insp-cat-score">27/30</div>
+          </div>
+          {% for item in ['Airbags Ready','ABS Function','Brake Lights','Horn','Wiper Blades','OBD II Scan (No codes)','Battery Health','Charging System'] %}
+          <div class="insp-item"><span>{{ item }}</span><div class="insp-check ok">✓</div></div>
+          {% endfor %}
+        </div>
+
+      </div>
+
+      <!-- Total Score Banner -->
+      <div class="insp-total">
+        <div>
+          <div class="insp-total-label">Total Inspection Score</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.3);margin-top:2px;">Certified by CarDealHub Inspector</div>
+        </div>
+        <div class="insp-total-val">{{ (car.condition_score * 14)|round|int }}/140</div>
+      </div>
+    </div>
+
+  </div><!-- /col-left -->
+
+  <!-- ══ RIGHT COLUMN ══ -->
+  <div class="sticky-right">
+
+    <!-- BID / PRICE CARD -->
+    <div class="bid-card">
+      {% if is_auction %}
+        <div class="bid-card-eyebrow">🔨 Current Bid</div>
+        <div class="bid-price">₹{{ "{:,.0f}".format(auction.current_bid) }}</div>
+        <div class="bid-price-sub">Started at ₹{{ "{:,.0f}".format(auction.start_price) }}</div>
+
+        <div class="bid-meta-row">
+          <div class="bid-meta">
+            <div class="bid-meta-label">Total Bids</div>
+            <div class="bid-meta-val green">{{ auction.bid_count or 0 }} bids</div>
+          </div>
+          <div class="bid-meta">
+            <div class="bid-meta-label">Ends In</div>
+            <div class="bid-meta-val" id="endTimeDisplay">--:--:--</div>
+          </div>
+        </div>
+
+        <!-- Countdown -->
+        <div class="countdown-wrap">
+          <div class="cd-block"><div class="cd-num" id="cdH">00</div><div class="cd-label">HRS</div></div>
+          <div class="cd-block"><div class="cd-num" id="cdM">00</div><div class="cd-label">MIN</div></div>
+          <div class="cd-block"><div class="cd-num" id="cdS">00</div><div class="cd-label">SEC</div></div>
+        </div>
+
+        {% if is_verified %}
+          <div class="bid-form-label">Place Your Bid (min ₹{{ "{:,.0f}".format(auction.current_bid + 1000) }})</div>
+          <form method="POST" action="{{ url_for('place_bid', auction_id=auction.id) }}">
+            <div class="bid-input-wrap">
+              <input class="bid-input" type="number" name="bid_amount"
+                     min="{{ (auction.current_bid + 1000)|int }}" step="1000"
+                     value="{{ (auction.current_bid + 1000)|int }}" required
+                     placeholder="Enter bid amount (₹)">
+              <button type="submit" class="btn-bid">Bid 🔨</button>
+            </div>
+          </form>
+          <!-- Live bid status preview -->
+          <div style="margin-bottom:10px;">
+            <span id="liveBidStatus" class="bid-status-badge" style="display:none;"></span>
+          </div>
+           {% else %}
+          <div class="verify-lock">🔒 Complete KYC verification to place bids · <a href="{{ url_for('onboarding') }}">Verify Now →</a></div>
+        {% endif %}
+
+        <button class="btn-watchlist">🔔 Watch this Auction</button>
+
+      {% else %}
+        <div class="bid-card-eyebrow">💰 Asking Price</div>
+        <div class="bid-price">₹{{ "{:,.0f}".format(car.price) }}</div>
+        <div class="bid-price-sub">Negotiable · Free RC Transfer</div>
+
+        <div class="bid-meta-row">
+          <div class="bid-meta">
+            <div class="bid-meta-label">Status</div>
+            <div class="bid-meta-val green">Available</div>
+          </div>
+          <div class="bid-meta">
+            <div class="bid-meta-label">Condition</div>
+            <div class="bid-meta-val">{{ car.condition_score }}/10</div>
+          </div>
+        </div>
+
+        <button class="btn-buy-now" onclick="alert('Request sent! A dealer will contact you within 2 hours.')">🤝 Express Interest</button>
+        <button class="btn-enquire" onclick="alert('Our team will call you within 2 hours.')">📞 Call Me Back</button>
+      {% endif %}
+    </div>
+
+    <!-- INSPECTION REPORT DOWNLOAD -->
+    <div class="insp-report-card">
+      <div class="section-title" style="margin-bottom:14px;"><span class="icon">📋</span> Inspection Report</div>
+      {% if is_verified %}
+      <a href="/inspection/{{ car.id }}" class="insp-dl">
+        <div class="insp-dl-icon">📄</div>
+        <div class="insp-dl-info">
+          <h4>Download Full Report</h4>
+          <p>140-point certified inspection PDF</p>
+        </div>
+        <div class="insp-dl-arrow">→</div>
+      </a>
+      {% else %}
+      <div style="background:#fafafa;border:1px solid #f0f0f0;border-radius:12px;padding:14px 16px;text-align:center;font-size:13px;color:#aaa;">
+        🔒 Complete verification to download inspection reports
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- EMI CALCULATOR -->
+    <div class="emi-card">
+      <div class="emi-title">🧮 Loan / EMI Calculator</div>
+      <div class="emi-sub">Estimate your monthly repayment</div>
+
+      <div class="emi-field">
+        <label>Loan Amount (₹)</label>
+        <input class="emi-input" type="number" id="emiLoan"
+               value="{{ ((auction.current_bid if is_auction else car.price) * 0.8)|round|int }}"
+               step="10000" min="10000" oninput="calcEMI()">
+      </div>
+      <div class="emi-field">
+        <label>Interest Rate (% / year)</label>
+        <input class="emi-input" type="number" id="emiRate" value="9.5" step="0.1" min="1" max="36" oninput="calcEMI()">
+      </div>
+      <div class="emi-field">
+        <label>Tenure — <span id="tenureLabel">36</span> months</label>
+        <input class="emi-slider" type="range" id="emiTenure" min="6" max="84" step="6" value="36"
+               oninput="document.getElementById('tenureLabel').textContent=this.value; calcEMI()">
+        <div class="slider-ticks"><span>6m</span><span>24m</span><span>48m</span><span>84m</span></div>
+      </div>
+
+      <div class="emi-results">
+        <div class="emi-res">
+          <div class="emi-res-label">Monthly EMI</div>
+          <div class="emi-res-val accent" id="emiMonthly">—</div>
+        </div>
+        <div class="emi-res">
+          <div class="emi-res-label">Total Payment</div>
+          <div class="emi-res-val" id="emiTotal">—</div>
+        </div>
+        <div class="emi-res">
+          <div class="emi-res-label">Total Interest</div>
+          <div class="emi-res-val" id="emiInterest">—</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sticky-right -->
+</div><!-- /page-wrap -->
+
+<script>
+/* ── Gallery swap ── */
+function swapImg(el) {
+  document.getElementById('heroImg').src = el.src.split('&')[0];
+  document.querySelectorAll('.gallery-thumbs img').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ── EMI Calculator ── */
+function fmt(n) {
+  return '₹' + Math.round(n).toLocaleString('en-IN');
+}
+function calcEMI() {
+  const P = parseFloat(document.getElementById('emiLoan').value) || 0;
+  const r = (parseFloat(document.getElementById('emiRate').value) || 9.5) / 12 / 100;
+  const n = parseInt(document.getElementById('emiTenure').value) || 36;
+  if (!P || !r) return;
+  const emi = P * r * Math.pow(1+r,n) / (Math.pow(1+r,n) - 1);
+  const total = emi * n;
+  document.getElementById('emiMonthly').textContent = fmt(emi);
+  document.getElementById('emiTotal').textContent = fmt(total);
+  document.getElementById('emiInterest').textContent = fmt(total - P);
+}
+calcEMI();
+
+/* ── 45-Minute Bid Session Countdown Timer ── */
+{% if is_auction %}
+const serverEndTime = new Date('{{ auction.end_time }}').getTime();
+// Cap display at 45 minutes from page load if auction has more time left
+const sessionStart = Date.now();
+const fortyFiveMin = 45 * 60 * 1000;
+const sessionEnd = Math.min(serverEndTime, sessionStart + fortyFiveMin);
+
+function updateCountdown() {
+  const now = Date.now();
+  const diff = serverEndTime - now;           // true auction end
+  const sessionDiff = sessionEnd - now;       // 45-min session display
+
+  if (diff <= 0) {
+    ['cdH','cdM','cdS'].forEach(id => document.getElementById(id).textContent = '00');
+    document.getElementById('endTimeDisplay').textContent = 'ENDED';
+    // Disable bid form
+    const bidBtn = document.querySelector('.btn-bid');
+    if (bidBtn) { bidBtn.disabled = true; bidBtn.textContent = 'Auction Ended'; bidBtn.style.opacity = '0.5'; }
+    return;
+  }
+
+  const displayDiff = Math.max(0, sessionDiff);
+  const h = Math.floor(displayDiff / 3600000);
+  const m = Math.floor((displayDiff % 3600000) / 60000);
+  const s = Math.floor((displayDiff % 60000) / 1000);
+  document.getElementById('cdH').textContent = String(h).padStart(2,'0');
+  document.getElementById('cdM').textContent = String(m).padStart(2,'0');
+  document.getElementById('cdS').textContent = String(s).padStart(2,'0');
+  document.getElementById('endTimeDisplay').textContent =
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+  // Urgency colour: red when < 5 min
+  const cdWrap = document.querySelector('.countdown-wrap');
+  if (cdWrap) cdWrap.style.setProperty('--cd-color', displayDiff < 300000 ? '#ef4444' : '');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+/* ── Live Bid Status Indicator ── */
+function getBidStatus(amount) {
+  const inc = amount - {{ auction.start_price|int }};
+  if (inc >= 100000) return { label: '🔥 On Bid',     cls: 'bid-status-win' };
+  if (inc >= 70000)  return { label: '🔥 On Bid',   cls: 'bid-status-onbid' };
+  if (inc >= 50000)  return { label: '🕐 Pending',  cls: 'bid-status-pending' };
+  if (inc >= 20000)  return { label: '⏳ Waiting',  cls: 'bid-status-waiting' };
+  return               { label: '📝 Registered', cls: 'bid-status-reg' };
+}
+const bidInput = document.querySelector('.bid-input');
+const statusEl = document.getElementById('liveBidStatus');
+if (bidInput && statusEl) {
+  bidInput.addEventListener('input', function() {
+    const amt = parseFloat(this.value) || 0;
+    const st = getBidStatus(amt);
+    statusEl.textContent = st.label;
+    statusEl.className = 'bid-status-badge ' + st.cls;
+    statusEl.style.display = amt > 0 ? 'inline-flex' : 'none';
+  });
+}
+{% endif %}
+
+/* ── NOTIFICATION TOASTS on Auction Page ── */
+(function() {
+    // Add toast container
+    const toastContainer = document.createElement('div');
+    toastContainer.id = 'bid-toast';
+    toastContainer.style.cssText = 'position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;';
+    document.body.appendChild(toastContainer);
+
+    // Toast styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .toast-card{background:#1a1a2e;color:#fff;border-radius:14px;padding:16px 22px;min-width:320px;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.25);display:flex;gap:14px;align-items:flex-start;pointer-events:all;animation:toastIn 0.3s ease;}
+        .toast-card.toast-win{border-left:4px solid #4ade80;}
+        .toast-card.toast-outbid{border-left:4px solid #f87171;}
+        .toast-card.toast-alert{border-left:4px solid #fbbf24;}
+        .toast-icon{font-size:22px;flex-shrink:0;}
+        .toast-body{flex:1;}
+        .toast-title{font-weight:700;font-size:13px;margin-bottom:3px;}
+        .toast-msg{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.4;}
+        .toast-close{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:18px;line-height:1;}
+        @keyframes toastIn{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+    `;
+    document.head.appendChild(style);
+
+    function showToast(msg, type) {
+        const icon = type === 'win' ? '🏆' : type === 'outbid' ? '🔴' : '⚡';
+        const title = type === 'win' ? 'Aap Highest Bidder Hain!' : type === 'outbid' ? 'Aap Outbid Ho Gaye!' : 'New High Bid!';
+        const div = document.createElement('div');
+        div.className = `toast-card toast-${type}`;
+        div.innerHTML = `<div class="toast-icon">${icon}</div><div class="toast-body"><div class="toast-title">${title}</div><div class="toast-msg">${msg.replace(/[🏆🔴⚡]/g,'').trim()}</div></div><button class="toast-close" onclick="this.parentElement.remove()">×</button>`;
+        toastContainer.appendChild(div);
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.frequency.value = type === 'win' ? 880 : 440;
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+            osc.start(); osc.stop(ctx.currentTime + 0.6);
+        } catch(e) {}
+        setTimeout(() => { if (div.parentElement) div.remove(); }, 7000);
+    }
+
+    let lastCount = 0;
+    function pollNotifs() {
+        fetch('/api/notifications/unread').then(r => r.json()).then(data => {
+            if (data.unread_count > lastCount && data.latest) {
+                const newCount = data.unread_count - lastCount;
+                data.latest.slice(0, newCount).forEach(n => {
+                    const msg = n.message;
+                    const type = msg.includes('🏆') ? 'win' : msg.includes('🔴') ? 'outbid' : 'alert';
+                    showToast(msg, type);
+                });
+            }
+            lastCount = data.unread_count;
+        }).catch(() => {});
+    }
+    // Start polling after page load
+    fetch('/api/notifications/unread').then(r => r.json()).then(d => { lastCount = d.unread_count; });
+    setInterval(pollNotifs, 10000);
+})();
+</script>
+</body>
+</html>

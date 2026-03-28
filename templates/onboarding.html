@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification - DealerHub</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="onboard-container">
+        <div class="navbar" style="margin:-30px -30px 30px;padding:14px 30px;border-radius:0">
+            <div class="logo">Dealer<span>Hub</span></div>
+            <nav><a href="/logout" class="btn btn-outline btn-sm">Logout</a></nav>
+        </div>
+        <div class="onboard-wrapper">
+            <div class="progress-bar">
+                <div class="progress-step {% if step >= 1 %}done{% elif step == 0 %}active{% endif %}">
+                    <div class="circle">{% if step >= 1 %}✓{% else %}1{% endif %}</div>
+                    <div class="label">Business</div>
+                </div>
+                <div class="progress-step {% if step >= 2 %}done{% elif step == 1 %}active{% endif %}">
+                    <div class="circle">{% if step >= 2 %}✓{% else %}2{% endif %}</div>
+                    <div class="label">Documents</div>
+                </div>
+                <div class="progress-step {% if step >= 3 %}done{% elif step == 2 %}active{% endif %}">
+                    <div class="circle">{% if step >= 3 %}✓{% else %}3{% endif %}</div>
+                    <div class="label">Bank</div>
+                </div>
+                <div class="progress-step {% if step >= 4 %}done{% elif step == 3 %}active{% endif %}">
+                    <div class="circle">{% if step >= 4 %}✓{% else %}4{% endif %}</div>
+                    <div class="label">Done</div>
+                </div>
+            </div>
+
+            <div class="onboard-card">
+                {% if step == 0 %}
+                <h3>Business Details</h3>
+                <p class="desc">Tell us about your dealership</p>
+                <form method="POST">
+                    <input type="hidden" name="step" value="1">
+                    <div class="form-group"><label>Business Name</label><input type="text" name="business_name" required placeholder="Your dealership name"></div>
+                    <div class="form-group"><label>GST Number</label><input type="text" name="gst_number" required placeholder="e.g. 22AAAAA0000A1Z5"></div>
+                    <div class="form-group"><label>Business Address</label><input type="text" name="business_address" required placeholder="Full address"></div>
+                    <button type="submit" class="btn btn-primary">Continue →</button>
+                </form>
+
+                {% elif step == 1 %}
+                <h3>Document Verification</h3>
+                <p class="desc">Submit your identity documents</p>
+                <form method="POST">
+                    <input type="hidden" name="step" value="2">
+                    <div class="form-group"><label>PAN Number</label><input type="text" name="pan_number" required placeholder="e.g. ABCDE1234F"></div>
+                    <div class="form-group"><label>ID Proof Type</label>
+                        <select name="id_proof_type" required>
+                            <option value="">Select ID proof</option>
+                            <option value="aadhar">Aadhar Card</option>
+                            <option value="voter_id">Voter ID</option>
+                            <option value="passport">Passport</option>
+                            <option value="driving_license">Driving License</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>ID Proof Number</label><input type="text" name="id_proof_number" required placeholder="Enter ID number"></div>
+                    <button type="submit" class="btn btn-primary">Continue →</button>
+                </form>
+
+                {% elif step == 2 %}
+                <h3>Bank Details</h3>
+                <p class="desc">Add your bank account for transactions</p>
+                <form method="POST">
+                    <input type="hidden" name="step" value="3">
+                    <div class="form-group"><label>Account Holder Name</label><input type="text" name="account_holder" required placeholder="Name as per bank"></div>
+                    <div class="form-group"><label>Account Number</label><input type="text" name="account_number" required placeholder="Enter account number"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>IFSC Code</label><input type="text" name="ifsc_code" required placeholder="e.g. SBIN0001234"></div>
+                        <div class="form-group"><label>Bank Name</label><input type="text" name="bank_name" required placeholder="e.g. State Bank"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Continue →</button>
+                </form>
+
+                {% elif step == 3 %}
+                <div class="completion-box">
+                    <div class="check-icon">✅</div>
+                    <h3>All Details Submitted!</h3>
+                    <p>Your documents are under review. Click below to proceed to your dashboard and start browsing cars.</p>
+                    <form method="POST">
+                        <input type="hidden" name="step" value="4">
+                        <button type="submit" class="btn btn-primary">Go to Dashboard →</button>
+                    </form>
+                </div>
+
+                {% else %}
+                <div class="completion-box">
+                    <div class="check-icon">🎉</div>
+                    <h3>You're Verified!</h3>
+                    <p>Head to your dashboard to start buying cars.</p>
+                    <a href="/dashboard" class="btn btn-primary">Open Dashboard</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

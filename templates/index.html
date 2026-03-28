@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DealerHub — India's Premier Car Auction Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        :root {
+            --gold: #D4A853;
+            --gold-light: #F0C96B;
+            --dark: #0A0A0F;
+            --dark-2: #12121A;
+            --dark-3: #1C1C2E;
+            --accent: #FF5722;
+            --white: #FFFFFF;
+            --muted: rgba(255,255,255,0.5);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* ── NAVBAR ── */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+            padding: 20px 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.4s ease;
+        }
+        .nav.scrolled {
+            background: rgba(10,10,15,0.95);
+            backdrop-filter: blur(20px);
+            padding: 14px 60px;
+            border-bottom: 1px solid rgba(212,168,83,0.15);
+        }
+        .nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px; font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .nav-logo span { color: var(--gold); }
+        .nav-links { display: flex; align-items: center; gap: 36px; }
+        .nav-links a {
+            color: var(--muted); font-size: 14px; font-weight: 500;
+            text-decoration: none; transition: color 0.2s;
+            letter-spacing: 0.3px;
+        }
+        .nav-links a:hover { color: var(--white); }
+        .nav-cta {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .btn-nav-login {
+            padding: 10px 24px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--white); font-size: 14px; font-weight: 500;
+            text-decoration: none; transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .btn-nav-login:hover { border-color: var(--gold); color: var(--gold); }
+        .btn-nav-join {
+            padding: 10px 24px; border-radius: 8px;
+            background: var(--gold); color: var(--dark);
+            font-size: 14px; font-weight: 700;
+            text-decoration: none; transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .btn-nav-join:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+        /* ── NAV PROFILE PILL ── */
+        .nav-dm-toggle { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:var(--white); padding:8px 12px; border-radius:8px; font-size:15px; cursor:pointer; transition:all .2s; }
+        .nav-dm-toggle:hover { background:rgba(255,255,255,0.15); border-color:var(--gold); }
+        .nav-profile-pill { display:inline-flex; align-items:center; gap:8px; padding:6px 14px 6px 6px; border-radius:100px; border:1px solid rgba(255,255,255,0.15); text-decoration:none; transition:all .2s; }
+        .nav-profile-pill:hover { border-color:var(--gold); }
+        .nav-avatar { width:28px; height:28px; border-radius:50%; background:var(--gold); color:var(--dark); font-family:'Syne',sans-serif; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center; }
+        .nav-profile-name { font-size:13px; font-weight:600; color:var(--white); }
+
+        /* ── LIGHT MODE ── */
+        body.light-mode { background:#F0F4FF; color:#0f172a; }
+        body.light-mode .nav.scrolled { background:rgba(240,244,255,0.97); border-bottom-color:rgba(0,0,0,0.08); }
+        body.light-mode .nav-logo { color:#0f172a; }
+        body.light-mode .nav-links a { color:#64748b; }
+        body.light-mode .nav-links a:hover { color:#0f172a; }
+        body.light-mode .btn-nav-login { border-color:rgba(0,0,0,0.15); color:#0f172a; }
+        body.light-mode .btn-nav-login:hover { border-color:var(--gold); color:var(--gold); }
+        body.light-mode .nav-dm-toggle { background:rgba(0,0,0,0.05); border-color:rgba(0,0,0,0.12); color:#0f172a; }
+        body.light-mode .hero { background:linear-gradient(160deg,#f0f4ff 0%,#e8eeff 100%); }
+        body.light-mode .hero-title { color:#0f172a; }
+        body.light-mode .hero-title .line2 { color:var(--gold); }
+        body.light-mode .hero-title .line3 { color:rgba(0,0,0,0.2); }
+        body.light-mode .hero-sub { color:#475569; }
+        body.light-mode .hero-badge { background:rgba(212,168,83,0.12); border-color:rgba(212,168,83,0.3); }
+        body.light-mode .btn-hero-ghost { border-color:rgba(0,0,0,0.15); color:#0f172a; }
+        body.light-mode .stats-bar { background:#fff; border-color:rgba(0,0,0,0.07); }
+        body.light-mode .stat-num { color:var(--gold); }
+        body.light-mode .stat-label { color:#64748b; }
+        body.light-mode .stat-item { border-right-color:rgba(0,0,0,0.07); }
+        body.light-mode .bod-section { background:#fff; }
+        body.light-mode .section-heading { color:#0f172a; }
+        body.light-mode .section-sub { color:#64748b; }
+        body.light-mode .nav-profile-name { color:#0f172a; }
+        body.light-mode .nav-profile-pill { border-color:rgba(0,0,0,0.12); }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 120px 60px 80px;
+            position: relative; overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 70% 50%, rgba(212,168,83,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 80% at 10% 80%, rgba(255,87,34,0.06) 0%, transparent 60%);
+        }
+        .hero-grid {
+            position: absolute; inset: 0; opacity: 0.03;
+            background-image: linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        .hero-content {
+            position: relative; max-width: 760px;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 18px; border-radius: 100px;
+            background: rgba(212,168,83,0.1);
+            border: 1px solid rgba(212,168,83,0.3);
+            font-size: 13px; font-weight: 500; color: var(--gold);
+            margin-bottom: 28px;
+            animation: fadeUp 0.6s ease both;
+        }
+        .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+            animation: pulse 2s infinite; }
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(48px, 7vw, 88px);
+            font-weight: 800; line-height: 0.95;
+            letter-spacing: -2px;
+            margin-bottom: 28px;
+            animation: fadeUp 0.7s 0.1s ease both;
+        }
+        .hero-title .line2 { color: var(--gold); display: block; }
+        .hero-title .line3 { color: rgba(255,255,255,0.25); font-size: 0.65em; display: block; letter-spacing: -1px; }
+        .hero-sub {
+            font-size: 18px; color: var(--muted); line-height: 1.7;
+            max-width: 520px; margin-bottom: 44px;
+            animation: fadeUp 0.7s 0.2s ease both;
+        }
+        .hero-actions {
+            display: flex; align-items: center; gap: 16px;
+            animation: fadeUp 0.7s 0.3s ease both;
+        }
+        .btn-hero-primary {
+            padding: 16px 40px; border-radius: 10px;
+            background: var(--gold); color: var(--dark);
+            font-size: 16px; font-weight: 700;
+            text-decoration: none; transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .btn-hero-primary:hover { background: var(--gold-light); transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(212,168,83,0.3); }
+        .btn-hero-ghost {
+            padding: 16px 32px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--white); font-size: 16px; font-weight: 500;
+            text-decoration: none; transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .btn-hero-ghost:hover { border-color: rgba(255,255,255,0.4); }
+
+        /* ── FLOATING STAT CARDS ── */
+        .hero-float-card {
+            position:absolute; display:flex; align-items:center; gap:10px;
+            background:rgba(255,255,255,0.06); backdrop-filter:blur(20px);
+            border:1px solid rgba(255,255,255,0.12); border-radius:14px;
+            padding:12px 18px; animation:floatUp 0.8s ease both;
+        }
+        .hero-float-1 { right:8%; top:28%; animation-delay:0.5s; }
+        .hero-float-2 { right:12%; top:52%; animation-delay:0.7s; }
+        .hero-float-3 { right:5%; top:72%; animation-delay:0.9s; }
+        .hfc-icon { font-size:22px; }
+        .hfc-val { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--gold); line-height:1; }
+        .hfc-label { font-size:11px; color:rgba(255,255,255,0.4); font-weight:500; }
+        @keyframes floatUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        @media(max-width:900px){ .hero-float-card { display:none; } }
+
+        /* ── TRUST BADGES ── */
+        .hero-trust {
+            display:flex; align-items:center; gap:16px; margin-top:32px;
+            animation:fadeUp 0.7s 0.4s ease both;
+        }
+        .trust-item { display:flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,0.45); font-weight:500; }
+        .trust-sep { color:rgba(255,255,255,0.15); }
+        @media(max-width:600px){ .hero-trust { flex-wrap:wrap; gap:10px; } .trust-sep { display:none; } }
+
+        /* ── STATS TICKER ── */
+        .stats-bar {
+            background: var(--dark-2);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0 60px;
+            display: flex; align-items: stretch;
+        }
+        .stat-item {
+            flex: 1; padding: 28px 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            text-align: center;
+        }
+        .stat-item:last-child { border-right: none; }
+        .stat-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 42px; font-weight: 800;
+            color: var(--gold); line-height: 1;
+        }
+        .stat-label { font-size: 13px; color: var(--muted); margin-top: 6px; font-weight: 500; }
+
+        /* ── BID OF THE DAY ── */
+        .bod-section {
+            padding: 100px 60px;
+            background: var(--dark-2);
+        }
+        .section-eyebrow {
+            font-size: 12px; font-weight: 700; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--gold);
+            margin-bottom: 12px;
+        }
+        .section-heading {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(36px, 4vw, 56px);
+            font-weight: 800; letter-spacing: -1px;
+            line-height: 1.05; margin-bottom: 16px;
+        }
+        .section-sub { color: var(--muted); font-size: 16px; max-width: 480px; line-height: 1.6; }
+
+        .bod-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+            border-radius: 20px; overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+            margin-top: 60px;
+        }
+        body.light-mode .how-section {
+    background: #ffffff;
+}
+ 
+body.light-mode .cta-section {
+    background: #f8fafc;
+}
+body.light-mode .features-section {
+    background: #ffffff;
+}
+
+body.light-mode .feature-card {
+    background: #ffffff;
+    border-color: rgba(0,0,0,0.08);
+}
+
+body.light-mode .feat-desc {
+    color: #64748b;
+}
+body.light-mode .features-section {
+    background: #ffffff;
+}
+/* DARK MODE (already white – keep it strong) */
+.hero-trust .trust-item {
+    color: rgba(255,255,255,0.6);
+}
+
+.hero-trust .trust-sep {
+    color: rgba(255,255,255,0.3);
+}
+
+/* LIGHT MODE (MAKE IT BLACK / DARK) */
+body.light-mode .hero-trust .trust-item {
+    color: #0f172a;   /* dark text */
+}
+
+body.light-mode .hero-trust .trust-sep {
+    color: #94a3b8;   /* soft divider */
+}
+body.light-mode .inventory-section {
+    background: #ffffff;
+}
+        .bod-image {
+            position: relative; overflow: hidden; aspect-ratio: 4/3;
+        }
+        .bod-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .bod-image:hover img { transform: scale(1.04); }
+        .bod-image-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to right, transparent 50%, var(--dark-3) 100%);
+        }
+        .featured-tag {
+            position: absolute; top: 24px; left: 24px;
+            background: var(--gold); color: var(--dark);
+            font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 8px 16px; border-radius: 100px;
+        }
+        .bod-details {
+            background: var(--dark-3);
+            padding: 56px 52px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .bod-tag {
+            font-size: 12px; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--gold);
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 20px;
+        }
+        .live-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+            animation: pulse 1.5s infinite;
+        }
+        .bod-car-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 38px; font-weight: 800; letter-spacing: -1px;
+            line-height: 1.1; margin-bottom: 8px;
+        }
+        .bod-meta {
+            font-size: 14px; color: var(--muted);
+            margin-bottom: 24px;
+        }
+        .bod-desc {
+            font-size: 15px; color: rgba(255,255,255,0.6);
+            line-height: 1.7; margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .bid-stats {
+            display: flex; gap: 40px; margin-bottom: 32px;
+        }
+        .bid-stat-item {}
+        .bid-stat-label { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+        .bid-stat-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px; font-weight: 800;
+        }
+        .bid-stat-value.gold { color: var(--gold); }
+        .bod-cta {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .btn-bid {
+            flex: 1; padding: 16px; border-radius: 10px;
+            background: var(--gold); color: var(--dark);
+            font-size: 16px; font-weight: 700;
+            text-align: center; text-decoration: none;
+            transition: all 0.2s; cursor: pointer;
+            border: none; font-family: 'DM Sans', sans-serif;
+        }
+        .btn-bid:hover { background: var(--gold-light); transform: translateY(-2px); }
+        .condition-bar {
+            margin-bottom: 32px;
+        }
+        .condition-label {
+            display: flex; justify-content: space-between;
+            font-size: 13px; color: var(--muted); margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .condition-track {
+            height: 6px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden;
+        }
+        .condition-fill {
+            height: 100%; border-radius: 10px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+            transition: width 1s ease;
+        }
+        .no-bod {
+            text-align: center; padding: 80px 40px;
+            background: var(--dark-3); border-radius: 20px; margin-top: 60px;
+            color: var(--muted);
+        }
+
+        /* ── TICKER ── */
+        .ticker-wrapper {
+            background: var(--dark-3);
+            padding: 16px 0;
+            overflow: hidden;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .ticker-label {
+            position: absolute; left: 0; top: 0; bottom: 0;
+            background: var(--gold); color: var(--dark);
+            padding: 0 20px; display: flex; align-items: center;
+            font-size: 11px; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase; z-index: 2;
+        }
+        .ticker-wrap { position: relative; }
+        .ticker-track {
+            display: flex; gap: 60px;
+            animation: ticker 30s linear infinite;
+            width: max-content; padding-left: 200px;
+        }
+        .ticker-item {
+            display: flex; align-items: center; gap: 12px;
+            white-space: nowrap; font-size: 14px; color: var(--muted);
+        }
+        .ticker-item strong { color: var(--white); font-weight: 600; }
+        .ticker-item .amount { color: var(--gold); font-weight: 700; }
+
+        /* ── FEATURED INVENTORY ── */
+        .inventory-section { padding: 100px 60px; }
+        .section-header {
+            display: flex; align-items: flex-end; justify-content: space-between;
+            margin-bottom: 60px;
+        }
+        .view-all-link {
+            color: var(--gold); font-size: 14px; font-weight: 600;
+            text-decoration: none; display: flex; align-items: center; gap: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--gold);
+            transition: all 0.2s;
+        }
+        .view-all-link:hover { color: var(--gold-light); }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .inv-card {
+            background: var(--dark-2);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; overflow: hidden;
+            transition: all 0.3s ease; cursor: pointer;
+        }
+        .inv-card:hover {
+            border-color: rgba(212,168,83,0.3);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .inv-card-img {
+            position: relative; aspect-ratio: 16/10; overflow: hidden;
+        }
+        .inv-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .inv-card:hover .inv-card-img img { transform: scale(1.06); }
+        .inv-card-fuel {
+            position: absolute; top: 14px; right: 14px;
+            background: rgba(10,10,15,0.8); backdrop-filter: blur(10px);
+            color: var(--white); font-size: 11px; font-weight: 600;
+            padding: 5px 12px; border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .inv-card-body { padding: 22px 24px; }
+        .inv-card-brand { font-size: 11px; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+        .inv-card-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px; font-weight: 700;
+            margin-bottom: 12px; line-height: 1.2;
+        }
+        .inv-card-specs {
+            display: flex; gap: 16px; margin-bottom: 18px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .inv-spec {
+            font-size: 12px; color: var(--muted);
+            display: flex; align-items: center; gap: 5px;
+        }
+        .inv-card-footer {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .inv-price {
+            font-family: 'Syne', sans-serif;
+            font-size: 24px; font-weight: 800; color: var(--gold);
+        }
+        .inv-location { font-size: 12px; color: var(--muted); }
+
+        /* ── HOW IT WORKS ── */
+        .how-section {
+            padding: 100px 60px;
+            background: var(--dark-2);
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0;
+            margin-top: 70px;
+            position: relative;
+        }
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 28px; left: calc(10% + 28px); right: calc(10% + 28px);
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), var(--gold), var(--gold), var(--gold), transparent);
+            opacity: 0.3;
+        }
+        .how-step { text-align: center; padding: 0 20px; }
+        .step-num {
+            width: 56px; height: 56px; border-radius: 50%;
+            border: 2px solid rgba(212,168,83,0.4);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            font-family: 'Syne', sans-serif;
+            font-size: 20px; font-weight: 800; color: var(--gold);
+            background: var(--dark-2);
+            position: relative; z-index: 1;
+        }
+        .how-step h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 17px; font-weight: 700; margin-bottom: 8px;
+        }
+        .how-step p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+        /* ── FEATURES ── */
+        .features-section { padding: 100px 60px; }
+        .features-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+            margin-top: 60px;
+        }
+        .feature-card {
+            background: var(--dark-2);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 36px 40px;
+            transition: all 0.3s;
+        }
+        .feature-card:first-child {
+            grid-row: span 2;
+            background: linear-gradient(135deg, var(--dark-3), rgba(212,168,83,0.06));
+            border-color: rgba(212,168,83,0.2);
+        }
+        .feature-card:hover { border-color: rgba(212,168,83,0.3); transform: translateY(-3px); }
+        .feat-icon { font-size: 40px; margin-bottom: 20px; }
+        .feat-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 24px; font-weight: 700; margin-bottom: 12px;
+        }
+        .feat-desc { font-size: 15px; color: var(--muted); line-height: 1.7; }
+
+        /* ── CTA SECTION ── */
+        .cta-section {
+            padding: 120px 60px;
+            background: var(--dark-2);
+            text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .cta-glow {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px; height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, rgba(212,168,83,0.1), transparent 70%);
+        }
+        .cta-section .section-heading { font-size: clamp(40px, 5vw, 72px); position: relative; }
+        .cta-section .section-sub { margin: 20px auto 40px; position: relative; }
+        .cta-section .btn-hero-primary { font-size: 18px; padding: 18px 52px; position: relative; }
+
+        /* ── FOOTER ── */
+        .site-footer {
+            background: var(--dark);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 40px 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .footer-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px; font-weight: 800;
+        }
+        .footer-logo span { color: var(--gold); }
+        .footer-copy { font-size: 13px; color: var(--muted); }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+        @keyframes ticker {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        @media (max-width: 900px) {
+            .nav { padding: 16px 24px; }
+            .nav.scrolled { padding: 12px 24px; }
+            .nav-links { display: none; }
+            .hero { padding: 100px 24px 60px; }
+            .stats-bar { flex-wrap: wrap; padding: 0 24px; }
+            .stat-item { min-width: 50%; }
+            .bod-section, .inventory-section, .how-section, .features-section, .cta-section { padding: 70px 24px; }
+            .bod-grid { grid-template-columns: 1fr; }
+            .bod-image { aspect-ratio: 16/9; }
+            .bod-image-overlay { background: linear-gradient(to bottom, transparent 50%, var(--dark-3) 100%); }
+            .steps-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+            .steps-grid::before { display: none; }
+            .features-grid { grid-template-columns: 1fr; }
+            .feature-card:first-child { grid-row: auto; }
+            .site-footer { flex-direction: column; gap: 12px; text-align: center; }
+            .section-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="nav" id="navbar">
+    <div class="nav-logo">Dealer<span>Hub</span></div>
+    <div class="nav-links">
+        <a href="#bid-of-day">Bid of the Day</a>
+        <a href="#inventory">Inventory</a>
+        <a href="#how-it-works">How It Works</a>
+    </div>
+    <div class="nav-cta">
+        <!-- Dark/Light mode toggle -->
+        <button class="nav-dm-toggle" onclick="toggleDarkMode()" id="navDmToggle" title="Toggle dark/light mode">🌙</button>
+        {% if session.dealer_id %}
+            <a href="/profile" class="nav-profile-pill">
+                <span class="nav-avatar">{{ session.dealer_name[0]|upper if session.dealer_name else 'D' }}</span>
+                <span class="nav-profile-name">{{ session.dealer_name or 'Dealer' }}</span>
+            </a>
+            <a href="/dashboard" class="btn-nav-join">Dashboard →</a>
+        {% else %}
+            <a href="/login" class="btn-nav-login">Login</a>
+            <a href="/register" class="btn-nav-join">Join as Dealer →</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <!-- Floating Stat Cards -->
+    <div class="hero-float-card hero-float-1">
+        <div class="hfc-icon">🔨</div>
+        <div class="hfc-body">
+            <div class="hfc-val">{{ stats.live_auctions }}</div>
+            <div class="hfc-label">Live Auctions</div>
+        </div>
+    </div>
+    <div class="hero-float-card hero-float-2">
+        <div class="hfc-icon">🏆</div>
+        <div class="hfc-body">
+            <div class="hfc-val">{{ stats.total_bids }}+</div>
+            <div class="hfc-label">Bids Today</div>
+        </div>
+    </div>
+    <div class="hero-float-card hero-float-3">
+        <div class="hfc-icon">✅</div>
+        <div class="hfc-body">
+            <div class="hfc-val">{{ stats.total_dealers }}+</div>
+            <div class="hfc-label">Verified Dealers</div>
+        </div>
+    </div>
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            {{ stats.live_auctions }} Live Auctions · India's #1 Dealer Platform
+        </div>
+        <h1 class="hero-title">
+            Win The
+            <span class="line2">Best Cars.</span>
+            <span class="line3">Auction. Inspect. Buy.</span>
+        </h1>
+        <p class="hero-sub">
+            Join {{ "{:,}".format(stats.total_dealers) }}+ verified dealers across India. Browse {{ stats.total_cars }}+ inspected vehicles and bid in live auctions — all in one platform.
+        </p>
+        <div class="hero-actions">
+            <a href="/register" class="btn-hero-primary">Start Bidding Today →</a>
+            <a href="#bid-of-day" class="btn-hero-ghost">View Bid of the Day</a>
+        </div>
+        <!-- Trust badges -->
+        <div class="hero-trust">
+            <div class="trust-item"><span>🔒</span> Secure KYC</div>
+            <div class="trust-sep">·</div>
+            <div class="trust-item"><span>📋</span> 140-pt Inspection</div>
+            <div class="trust-sep">·</div>
+            <div class="trust-item"><span>⚡</span> Instant Bidding</div>
+            <div class="trust-sep">·</div>
+            <div class="trust-item"><span>🏦</span> EMI Available</div>
+        </div>
+    </div>
+</section>
+
+<!-- LIVE TICKER -->
+<div class="ticker-wrap">
+    <div class="ticker-wrapper" style="position:relative;">
+        <div class="ticker-label">🔴 LIVE</div>
+        <div class="ticker-track">
+            {% if live_auctions %}
+            {% for a in live_auctions %}
+            <div class="ticker-item">
+                <strong>{{ a.car_name }}</strong>
+                <span>·</span>
+                <span class="amount">₹{{ "{:,.0f}".format(a.current_bid) }}</span>
+                <span>·</span>
+                <span>📍 {{ a.location }}</span>
+            </div>
+            {% endfor %}
+            <!-- Duplicate for seamless loop -->
+            {% for a in live_auctions %}
+            <div class="ticker-item">
+                <strong>{{ a.car_name }}</strong>
+                <span>·</span>
+                <span class="amount">₹{{ "{:,.0f}".format(a.current_bid) }}</span>
+                <span>·</span>
+                <span>📍 {{ a.location }}</span>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="ticker-item"><strong>No live auctions at the moment — check back soon</strong></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-num">{{ stats.total_cars }}+</div>
+        <div class="stat-label">Inspected Cars</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num">{{ stats.live_auctions }}</div>
+        <div class="stat-label">Live Auctions</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num">{{ stats.total_dealers }}+</div>
+        <div class="stat-label">Active Dealers</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num">{{ stats.total_bids }}+</div>
+        <div class="stat-label">Total Bids Placed</div>
+    </div>
+</div>
+
+<!-- BID OF THE DAY -->
+<section class="bod-section" id="bid-of-day">
+    <div class="section-eyebrow">✦ EXCLUSIVE</div>
+    <h2 class="section-heading">Bid of<br>the Day</h2>
+    <p class="section-sub">Our handpicked feature auction — highest-value deal available right now.</p>
+
+    {% if bid_of_day %}
+    <div class="bod-grid">
+        <div class="bod-image">
+            <img src="{{ bid_of_day.image_url }}" alt="{{ bid_of_day.car_name }}">
+            <div class="bod-image-overlay"></div>
+            <div class="featured-tag">⭐ FEATURED</div>
+        </div>
+        <div class="bod-details">
+            <div class="bod-tag">
+                <span class="live-dot"></span> LIVE AUCTION
+            </div>
+            <div class="bod-car-name">{{ bid_of_day.car_name }}</div>
+            <div class="bod-meta">{{ bid_of_day.year }} · {{ bid_of_day.fuel_type }} · {{ bid_of_day.km_driven|int|string + " km" }} · 📍 {{ bid_of_day.location }}</div>
+            {% if bid_of_day.description %}
+            <div class="bod-desc">{{ bid_of_day.description }}</div>
+            {% endif %}
+
+            {% if bid_of_day.condition_score %}
+            <div class="condition-bar">
+                <div class="condition-label">
+                    <span>Condition Score</span>
+                    <span>{{ bid_of_day.condition_score }}/10</span>
+                </div>
+                <div class="condition-track">
+                    <div class="condition-fill" style="width: {{ bid_of_day.condition_score * 10 }}%"></div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="bid-stats">
+                <div class="bid-stat-item">
+                    <div class="bid-stat-label">Current Bid</div>
+                    <div class="bid-stat-value gold">₹{{ "{:,.0f}".format(bid_of_day.current_bid) }}</div>
+                </div>
+                <div class="bid-stat-item">
+                    <div class="bid-stat-label">Started At</div>
+                    <div class="bid-stat-value">₹{{ "{:,.0f}".format(bid_of_day.start_price) }}</div>
+                </div>
+            </div>
+
+            <div class="bod-cta">
+                <a href="/register" class="btn-bid">Register to Bid →</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-bod">
+        <div style="font-size:48px; margin-bottom:12px">🔨</div>
+        <p>No featured auction today. <a href="/register" style="color:var(--gold)">Register</a> to browse all live auctions.</p>
+    </div>
+    {% endif %}
+</section>
+
+<!-- FEATURED INVENTORY -->
+<section class="inventory-section" id="inventory">
+    <div class="section-header">
+        <div>
+            <div class="section-eyebrow">✦ INVENTORY</div>
+            <h2 class="section-heading" style="margin-bottom:0">Featured<br>Vehicles</h2>
+        </div>
+        <a href="/register" class="view-all-link">View All Cars →</a>
+    </div>
+
+    {% if featured_cars %}
+    <div class="inventory-grid">
+        {% for car in featured_cars %}
+        <div class="inv-card">
+            <div class="inv-card-img">
+                <img src="{{ car.image_url }}" alt="{{ car.name }}">
+                <span class="inv-card-fuel">{{ car.fuel_type }}</span>
+            </div>
+            <div class="inv-card-body">
+                <div class="inv-card-brand">{{ car.brand }}</div>
+                <div class="inv-card-name">{{ car.name }}</div>
+                <div class="inv-card-specs">
+                    <div class="inv-spec">📅 {{ car.year }}</div>
+                    <div class="inv-spec">🛣️ {{ car.km_driven|int }} km</div>
+                    <div class="inv-spec">📍 {{ car.location }}</div>
+                </div>
+                <div class="inv-card-footer">
+                    <div class="inv-price">₹{{ "{:,.0f}".format(car.price) }}</div>
+                    {% if car.condition_score %}
+                    <div style="font-size:12px; color:var(--muted)">⭐ {{ car.condition_score }}/10</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center; padding:60px; color:var(--muted)">No cars available right now.</div>
+    {% endif %}
+</section>
+
+<!-- HOW IT WORKS -->
+ 
+<section class="how-section" id="how-it-works">
+    <div style="text-align:center; max-width:600px; margin:0 auto;">
+        <div class="section-eyebrow">✦ PROCESS</div>
+        <h2 class="section-heading">How DealerHub<br>Works</h2>
+        <p class="section-sub" style="margin:0 auto;">Five simple steps to get you from signup to your first car purchase.</p>
+    </div>
+    <div class="steps-grid">
+        <div class="how-step">
+            <div class="step-num">01</div>
+            <h4>Sign Up</h4>
+            <p>Create your dealer account in minutes with basic details.</p>
+        </div>
+        <div class="how-step">
+            <div class="step-num">02</div>
+            <h4>Get Verified</h4>
+            <p>Submit GST, PAN and bank details for one-time KYC verification.</p>
+        </div>
+        <div class="how-step">
+            <div class="step-num">03</div>
+            <h4>Browse Cars</h4>
+            <p>Access full inventory with detailed inspection reports for every vehicle.</p>
+        </div>
+        <div class="how-step">
+            <div class="step-num">04</div>
+            <h4>Place Bids</h4>
+            <p>Participate in live auctions and compete to win the best deals.</p>
+        </div>
+        <div class="how-step">
+            <div class="step-num">05</div>
+            <h4>Purchase</h4>
+            <p>Win the auction, complete payment, and get delivery arranged.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+    <div class="section-eyebrow">✦ WHY DEALERHUB</div>
+    <h2 class="section-heading">Everything a<br>Dealer Needs</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feat-icon">📋</div>
+            <div class="feat-title">Full Inspection Reports</div>
+            <p class="feat-desc">Every car comes with a comprehensive inspection report covering 150+ checkpoints — engine health, body condition, legal history, and more. Download before you bid, so you always know what you're buying.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feat-icon">🔨</div>
+            <div class="feat-title">Live Auction Engine</div>
+            <p class="feat-desc">Real-time bidding with live price updates, countdown timers, and instant bid notifications.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feat-icon">🔒</div>
+            <div class="feat-title">KYC Verified Platform</div>
+            <p class="feat-desc">Every dealer is KYC verified — ensuring a trustworthy ecosystem for all transactions.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feat-icon">📊</div>
+            <div class="feat-title">Dealer Dashboard</div>
+            <p class="feat-desc">Track your bids, purchases, notifications, and inventory from a single powerful dashboard.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="cta-glow"></div>
+    <div class="section-eyebrow">✦ GET STARTED</div>
+    <h2 class="section-heading">Your Next Car<br>is One Bid Away.</h2>
+    <p class="section-sub" style="max-width:480px; margin:20px auto 40px;">Join thousands of dealers already winning great deals on DealerHub. Registration is free.</p>
+    <a href="/register" class="btn-hero-primary">Create Your Free Account →</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="footer-logo">Dealer<span>Hub</span></div>
+    <div class="footer-copy">© 2026 DealerHub. India's Premier Car Auction Platform. All rights reserved.</div>
+</footer>
+
+<script>
+    // Navbar scroll effect
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Dark / Light mode
+    function toggleDarkMode() {
+        const isLight = document.body.classList.toggle('light-mode');
+        localStorage.setItem('dhMode', isLight ? 'light' : 'dark');
+        document.getElementById('navDmToggle').textContent = isLight ? '☀️' : '🌙';
+    }
+    (function(){
+        if (localStorage.getItem('dhMode') === 'light') {
+            document.body.classList.add('light-mode');
+            const btn = document.getElementById('navDmToggle');
+            if (btn) btn.textContent = '☀️';
+        }
+    })();
+
+    // Animate stats on scroll
+    const counters = document.querySelectorAll('.stat-num[data-target]');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const target = parseInt(el.dataset.target);
+                let current = 0;
+                const step = Math.ceil(target / 60);
+                const timer = setInterval(() => {
+                    current = Math.min(current + step, target);
+                    el.textContent = current.toLocaleString('en-IN') + (el.dataset.suffix || '');
+                    if (current >= target) clearInterval(timer);
+                }, 25);
+                observer.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+    counters.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
